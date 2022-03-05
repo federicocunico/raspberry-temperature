@@ -3,12 +3,12 @@ import time
 import sys
 import RPi.GPIO as GPIO
 
-
+GPIO_TEMP_PIN = 4
 GPIO_PWM_PINS = [17, 18]
 PWMS = []
 
-MIN_TEMP = 45
-MAX_TEMP = 60
+MIN_TEMP = 35
+MAX_TEMP = 55
 
 FAN_LOW = 20
 FAN_HIGH = 100
@@ -30,9 +30,17 @@ def get_cpu_temperature():
     return temp
 
 
+def get_temperature():
+    import Adafruit_DHT
+    sensor = Adafruit_DHT.AM2302
+    humidity, temperature = Adafruit_DHT.read_retry(sensor, GPIO_TEMP_PIN)
+
+
 def get_ambiental_temp():
     ## TODO: implement
-    return get_cpu_temperature()
+    cpu_temp = get_cpu_temperature()
+    humidity, temp = get_temperature()
+    return temp
 
 
 def setup_pins():
@@ -41,6 +49,7 @@ def setup_pins():
         pwm = GPIO.PWM(pin, 50)  # 50 Hz
         PWMS.append(pwm)
 
+    GPIO.setup(GPIO_TEMP_PIN, GPIO.IN)
 
 def start_fans():
     for pwm in PWMS:
