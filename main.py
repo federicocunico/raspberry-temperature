@@ -34,6 +34,7 @@ def get_temperature():
     import Adafruit_DHT
     sensor = Adafruit_DHT.AM2302
     humidity, temperature = Adafruit_DHT.read_retry(sensor, GPIO_TEMP_PIN)
+    return humidity, temperature
 
 
 def get_ambiental_temp():
